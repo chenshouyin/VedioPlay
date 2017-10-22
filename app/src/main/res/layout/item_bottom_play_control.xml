@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="#1c2335"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivPlay"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/img_pause" />
+
+    <TextView
+        android:id="@+id/tvCurrentDuration"
+        style="@style/styleitemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/ivPlay"
+        android:text="00:00" />
+
+    <SeekBar
+        android:id="@+id/mSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/tvTotalDuration"
+        android:layout_toRightOf="@+id/tvCurrentDuration" />
+
+    <TextView
+        android:id="@+id/tvTotalDuration"
+        style="@style/styleitemText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/ivScreenSize"
+        android:text="00:00" />
+
+    <ImageView
+        android:id="@+id/ivScreenSize"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/img_full_screen"
+
+        />
+
+
+</RelativeLayout>
