@@ -51,6 +51,9 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
 
     private final static int MSG_UPDATA_DELAY = 1 * 500;
     private final static int MSG_CLOSE_BOTTOM_DELAY = 1 * 1000;
+    private float judgeDistance = 20;
+    private float oldX = 0;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -218,6 +221,7 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
 
             curentOrientationPortrait = false;
             ivExit.setVisibility(View.VISIBLE);
+            ivScreenSize.setImageResource(R.drawable.img_full_screen);
             mHandler.sendEmptyMessageDelayed(MSG_CLOSE_BOTTOM, MSG_CLOSE_BOTTOM_DELAY);//延时1s,关闭底部控制栏
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);//显示顶部状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -227,6 +231,7 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
             rootVideoView.setLayoutParams(params);
             animShow(true);
             ivExit.setVisibility(View.GONE);
+            ivScreenSize.setImageResource(R.drawable.img_not_full_screen);
             curentOrientationPortrait = true;
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//全屏不 显示顶部状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -275,8 +280,11 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);//最大15
             int flag = value > 0 ? -1 : 1;
             currentVolume += flag * 0.1 * maxVolume;
+            currentVolume = Math.max(currentVolume,0);//保证最新为0
             // 对currentVolume进行限制
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+            System.out.println("====mm======maxVolume=="+maxVolume+"===currentVolume==="+currentVolume+"==="+audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -453,9 +461,10 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                oldX = event.getX();
                 System.out.println("========onTouch=====ACTION_DOWN===false");
                 if (curentOrientationPortrait) {
-                    return false;
+                    return true;
                 }
                 if (viewBottom.getVisibility() == View.GONE) {
                     animShow(true);
@@ -466,7 +475,17 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
                 }
                 break;
             case MotionEvent.ACTION_UP:
-
+                float dis = event.getX()-oldX ;
+                WindowManager wm = this.getWindowManager();
+                int width = wm.getDefaultDisplay().getWidth();
+                if (dis >judgeDistance){
+                    //向右
+                    System.out.println("======向右==="+dis /width);
+                }else if (dis <-judgeDistance){
+                    //向左
+                    System.out.println("======向左==="+dis /width);
+                }
+                setVoiceVolume(-dis/width*10,CustomPlayStyleActivity.this);
                 break;
             case MotionEvent.ACTION_MOVE:
                 System.out.println("========onTouch=====ACTION_MOVE===false");
@@ -476,6 +495,6 @@ public class CustomPlayStyleActivity extends AppCompatActivity implements View.O
                 break;
         }
         //false 只进ACTION_DOWN 应该是继续向外传递了
-        return false;
+        return true;
     }
 }
